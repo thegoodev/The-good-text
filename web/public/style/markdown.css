@@ -1,0 +1,117 @@
+table, td, th {  
+    border: 1.5px solid #ddd;
+    text-align: left;
+}
+
+table{
+    margin-bottom: 1rem;
+}
+
+body{
+    background-color: #FAFAFA;
+}
+
+code{
+    background-color: #F1F1F4;
+    padding-top: 0.2em;
+    padding-bottom: 0.2em;
+    padding-left: 0.3em;
+    padding-right: 0.3em;
+    border-radius: 4px;
+}
+
+pre{
+    background-color: #F1F1F4;
+    padding: 1em;
+    border-radius: 4px;
+}
+
+pre code{
+    padding: 0;
+}
+
+.logo{
+    margin-left: 0;
+    margin-right: auto;
+    max-height: 24px;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+th, td {
+    padding: 15px;
+}
+
+blockquote{
+    padding-left: 1em;
+    border-left: 3px solid #440db7;
+}
+
+.ppic{
+    border-radius: 25%;
+    height: 96px;
+    width: 96px;
+    object-fit: cover;
+}
+
+img{
+    max-width: 100%;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.md-body{
+    max-width: 728px;
+}  
+
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+body {
+    margin-bottom: 300px; /* Margin bottom by footer height */
+}
+.footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 250px; /* Set the fixed height of the footer here */
+}
+
+.blog-header {
+    line-height: 1;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+ol, ul{
+    padding-inline-start: 1em;
+}
+
+.checklist{
+    padding-inline-start: 0;
+}
+
+.checkbox{
+    list-style: none;
+    margin-inline-start: 0 !important;
+    padding-inline-start: 0 !important;
+    display: flex !important;
+}
+
+.checklist li {
+    margin-inline-start: 1em;
+    padding-inline-start: 1em;
+    margin-bottom: 0.8em;
+}
+
+.checklist i {
+    vertical-align: text-top;
+}
+.material-icons.purple{
+    color: #440db7;
+}

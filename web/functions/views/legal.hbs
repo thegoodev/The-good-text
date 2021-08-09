@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <!-- Primary Meta Tags -->
+        <title>{{title}}</title>
+        <meta name="title" content= "{{title}}">
+        <meta name="description" content= "{{description}}">
+
+        <!-- Open Graph / Facebook -->
+        <meta property="og:type" content="website">
+        <meta property="og:url" content="{{url}}">
+        <meta property="og:title" content="{{title}}">
+        <meta property="og:description" content="{{description}}">
+        <meta property="og:image" content="{{image}}">
+
+        <!-- Twitter -->
+        <meta property="twitter:card" content="summary_large_image">
+        <meta property="twitter:url" content="{{url}}">
+        <meta property="twitter:title" content="{{title}}">
+        <meta property="twitter:description" content="{{description}}">
+        <meta property="twitter:image" content="{{image}}">
+
+        <!-- Theme -->
+        <meta name="theme-color" content="#440db7">
+
+        <!-- Favicon -->
+        <link rel="shortcut icon" type="image/png" href="https://the-good-text.com/assets/favicon.png"/>
+
+        <link rel="stylesheet" href="../style/bootstrap.min.css">
+        <link rel="stylesheet" href="../style/markdown.css">
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    </head>
+    <body>
+        <div class="container">
+            <header class="blog-header py-3 mx-auto">
+                <div class="row flex-nowrap justify-content-between align-items-center">
+                    <div class="col-6 text-center">
+                        <a href="../">
+                            <img class="logo" src="../assets/logo.png" alt="inicio">
+                        </a>
+                    </div>
+                    <div class="col-6 d-flex justify-content-end align-items-center">
+                        <a class="btn btn-outline-primary" href="https://play.google.com/store/apps/details?id=com.thegoodtext.app">Download App</a>
+                    </div>
+                </div>
+            </header>
+        </div>
+    
+        <main role="main" class="container">
+            <div class="row justify-content-center my-4">
+                <aside class="col-md-3 mb-4">
+                    <h3>Legal</h3>
+                    <ol class="nav-bar list-unstyled px-0">
+                        {{#each article}}
+                            <li>
+                                <a class="nav-link {{this.active}} px-0" href="../legal/{{@key}}">{{this.name}}</a>
+                            </li>
+                        {{/each}}
+                    </ol>
+                </aside>
+                {{#if data}}
+                    <div class="col-md-8">
+                        {{{data}}}
+                    </div>
+                {{/if}}
+            </div>
+        </main>
+
+        <footer class="d-flex align-items-center bg-primary text-white footer">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12 col-md">
+                        <a href="../">
+                            <img class="logo" src="../assets/logo_light.png" alt="inicio">
+                        </a>
+                        <p class="mt-2">A wonderful writing app that let's you share your ideas in a richer way.</p>
+                    </div>
+                    <div class="col-6 col-md">
+                        <h5>Support</h5>
+                        <ul class="list-unstyled text-small">
+                            <li>
+                                <a class="text-light" href="../legal/privacy-policy">Help Center</a>
+                            </li>
+                            <li>
+                                <a class="text-light" href="../legal/terms-of-use">Getting started</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-6 col-md">
+                        <h5>Legal</h5>
+                        <ul class="list-unstyled text-small">
+                            <li>
+                                <a class="text-light" href="../legal/privacy-policy">Privacy Policy</a>
+                            </li>
+                            <li>
+                                <a class="text-light" href="../legal/terms-of-use">Terms of Service</a>
+                            </li>
+                        </ul>                       
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </body>
+    <script src="../script/parseDate.js"></script>
+</html>

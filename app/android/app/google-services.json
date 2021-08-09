@@ -1,0 +1,69 @@
+{
+  "project_info": {
+    "project_number": "237457989005",
+    "firebase_url": "https://the-good-text-ef33a.firebaseio.com",
+    "project_id": "the-good-text-ef33a",
+    "storage_bucket": "the-good-text-ef33a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:237457989005:android:b9657eaa1f97cc820331c4",
+        "android_client_info": {
+          "package_name": "com.example.md_notes"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "237457989005-9vajpn26hsoq9jf1ttu7ka6f780racr1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD_9_rMObinVdGKyU3DpGaN6RYbbl3unig"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "237457989005-9vajpn26hsoq9jf1ttu7ka6f780racr1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:237457989005:android:11ac24ebdca271390331c4",
+        "android_client_info": {
+          "package_name": "com.thegoodtext.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "237457989005-9vajpn26hsoq9jf1ttu7ka6f780racr1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD_9_rMObinVdGKyU3DpGaN6RYbbl3unig"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "237457989005-9vajpn26hsoq9jf1ttu7ka6f780racr1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
