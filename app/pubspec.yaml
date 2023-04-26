@@ -47,7 +47,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
-  intl: ^0.16.1
+  intl: ^0.18.0
   #i18n
   flutter_i18n: ^0.18.0
   # Provider
