@@ -1,7 +1,6 @@
 import 'package:connectivity_wrapper/connectivity_wrapper.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:md_notes/auth.dart';
@@ -60,7 +59,7 @@ class SecondaryButton extends StatelessWidget{
     this.margin = const EdgeInsets.symmetric(vertical: 4, horizontal: 16),
     this.padding = const EdgeInsets.symmetric(vertical: 16),
     this.text, this.child, this.onPressed
-  }):assert(text==null||child==null);
+  }):assert(child==null);
 
   @override
   Widget build(BuildContext context) {
@@ -104,13 +103,13 @@ class PrimaryButton extends StatelessWidget{
     this.margin = const EdgeInsets.symmetric(vertical: 4, horizontal: 16),
     this.padding = const EdgeInsets.symmetric(vertical: 16),
     this.text, this.child, this.onPressed
-  }):assert(key==null||child==null);
+  }):assert(key==null);
 
   @override
   Widget build(BuildContext context) {
 
     bool light = brightness == Brightness.light;
-    Color mainColor = Theme.of(context).accentColor;
+    Color mainColor = Theme.of(context).colorScheme.secondary;
 
     return Padding(
       padding: margin,
@@ -173,7 +172,7 @@ class EmptySliver extends StatelessWidget{
             padding: EdgeInsets.only(left: 16, right: 16, bottom: 8, top: 16),
             child: Text(
               title, 
-              style: Theme.of(context).textTheme.headline6,
+              style: Theme.of(context).textTheme.titleLarge,
               textAlign: TextAlign.center
             ),
           ):SizedBox(),

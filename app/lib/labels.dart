@@ -118,8 +118,7 @@ class CreateLabel extends StatelessWidget{
         }else{
           user.createLabel(label);
           _controller.clear();
-          if(onCreated!=null)
-            onCreated.call(text);
+          onCreated.call(text);
         }
       },
       onClose: () {
@@ -545,13 +544,11 @@ class RenameDialogState extends State<RenameDialog>{
                   buttonText = "Merge";
                 });
               }else{
-                if(error!=null){
-                  setState(() {
-                    error = null;
-                    buttonText = "Rename";
-                  });
-                }
-              }
+                setState(() {
+                  error = null;
+                  buttonText = "Rename";
+                });
+                            }
             },
           ),
           ErrorText(error, padding: EdgeInsets.only(top:8),)
@@ -566,7 +563,7 @@ class RenameDialogState extends State<RenameDialog>{
           child: I18nText("Cancel")
         ),
         RaisedButton(
-          color: Theme.of(context).accentColor,
+          color: Theme.of(context).colorScheme.secondary,
           child: I18nText(buttonText, child: Text("", style: TextStyle(color: Colors.white))),
           onPressed: (){
             if(widget.label!=controller.text){

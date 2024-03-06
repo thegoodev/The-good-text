@@ -56,39 +56,37 @@ class _HomePageState extends State<HomePage> {
 
       String data = sharedData["data"], type = sharedData["type"];
 
-      if (data != null && type != null) {
-        Note note;
-        if(type != "link"){
+      Note note;
+      if(type != "link"){
 
-          var content = await platform.invokeMethod("getContent");
-          note = Note.blank(context);
-          note.source.origin = NoteOrigin.file;
-          note.body = "$content";
+        var content = await platform.invokeMethod("getContent");
+        note = Note.blank(context);
+        note.source.origin = NoteOrigin.file;
+        note.body = "$content";
 
-          
-          note.source.name = "/";
+        
+        note.source.name = "/";
+        note.source.key = homeScaffold;
+        note.source.uri = data;
+        return Navigator.of(context).pushNamed("/reader", arguments: note);
+
+      }else if(type == "link"){
+        homeSnackbar(I18nText("Loading"), duration: Duration(milliseconds: 1500));
+        LinkCallback callback = await Provider.of<GoodUser>(context, listen: false).openNoteFromUrl(data);
+
+        if(callback.isError){
+          homeSnackbar(Text(callback.result));
+        }else if(callback.isOther){
+          loadweb(data, context);
+        }else{
+          Note note = callback.result;
           note.source.key = homeScaffold;
-          note.source.uri = data;
-          return Navigator.of(context).pushNamed("/reader", arguments: note);
-
-        }else if(type == "link"){
-          homeSnackbar(I18nText("Loading"), duration: Duration(milliseconds: 1500));
-          LinkCallback callback = await Provider.of<GoodUser>(context, listen: false).openNoteFromUrl(data);
-
-          if(callback.isError){
-            homeSnackbar(Text(callback.result));
-          }else if(callback.isOther){
-            loadweb(data, context);
-          }else{
-            Note note = callback.result;
-            note.source.key = homeScaffold;
-            note.source.name = "/";
-            
-            Navigator.of(context).pushNamed("/reader", arguments: note);
-          }
+          note.source.name = "/";
+          
+          Navigator.of(context).pushNamed("/reader", arguments: note);
         }
       }
-    }catch(e){
+        }catch(e){
       homeSnackbar(Text("$e"));
     }
   }
@@ -186,7 +184,7 @@ class _HomePageState extends State<HomePage> {
 
                   List<Note> notes = value.notes;
 
-                  if(notes==null||user.data==null){
+                  if(user.data==null){
                     Widget progress = Center(
                       child: CircularProgressIndicator(),
                     );

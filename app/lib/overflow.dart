@@ -18,8 +18,7 @@ class OverFlow extends MultiChildRenderObjectWidget {
     this.clipBehavior = Clip.hardEdge,
     this.suggested = double.infinity,
     List<Widget> children = const <Widget>[],
-  }) : assert(clipBehavior != null),
-      assert(tolerance >= 0 && tolerance <= 1),
+  }) : assert(tolerance >= 0 && tolerance <= 1),
       super(key: key, children: children);
 
   final double suggested;
@@ -75,7 +74,6 @@ class Renderer extends RenderBox
     List<RenderBox> children,
     Clip clipBehavior = Clip.hardEdge,
   }) :
-       assert(clipBehavior != null),
        _tolerance = tolerance,
        _canvasColor = canvasColor,
        _clipBehavior = clipBehavior {
@@ -98,7 +96,6 @@ class Renderer extends RenderBox
   Clip get clipBehavior => _clipBehavior;
   Clip _clipBehavior = Clip.hardEdge;
   set clipBehavior(Clip value) {
-    assert(value != null);
     if (value != _clipBehavior) {
       _clipBehavior = value;
       markNeedsPaint();

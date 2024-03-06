@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:md_notes/note.dart';
 import 'package:md_notes/ui.dart';
@@ -61,7 +60,7 @@ class EditorState extends State<Editor>{
                       maxLength: null,
                       autofocus: note.body.isEmpty,
                       style: TextStyle(
-                        color: theme.textTheme.bodyText2.color.withOpacity(0.7),
+                        color: theme.textTheme.bodyMedium.color.withOpacity(0.7),
                         fontSize: 16.5,
                         fontFamily: "monospace"
                       ),

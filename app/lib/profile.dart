@@ -5,7 +5,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:md_notes/auth.dart';
 import 'package:md_notes/labels.dart';
@@ -49,37 +48,34 @@ class PhotoUploaderState extends State<PhotoUploader>{
       preferredCameraDevice: CameraDevice.front
     );
     
-    if(file != null){
+    print("saving foto");
 
-      print("saving foto");
+    StorageUploadTask task = FirebaseStorage.instance.ref()
+    .child('profilepics/${widget.user.uid}')
+    .putFile(File(file.path));
 
-      StorageUploadTask task = FirebaseStorage.instance.ref()
-      .child('profilepics/${widget.user.uid}')
-      .putFile(File(file.path));
-
-      task.events.listen((event) async {
-        if(event.type == StorageTaskEventType.success){
-          String url = await event.snapshot.ref.getDownloadURL();
-          widget.user.update(
-            photoUrl: url
-          );
-          state = PhotoState.idle;
-        }else if (event.type == StorageTaskEventType.failure){
-          state = PhotoState.error;
-        }else if (event.type == StorageTaskEventType.progress){
-          int bytes = event.snapshot.bytesTransferred;
-          progess = bytes==0?null:bytes/event.snapshot.totalByteCount;
-          state = PhotoState.loading;
-        }
-        print({
-          "type": event.type,
-          "bytes": event.snapshot.bytesTransferred,
-          "total": event.snapshot.totalByteCount,
-        });
-        setState((){});
+    task.events.listen((event) async {
+      if(event.type == StorageTaskEventType.success){
+        String url = await event.snapshot.ref.getDownloadURL();
+        widget.user.update(
+          photoUrl: url
+        );
+        state = PhotoState.idle;
+      }else if (event.type == StorageTaskEventType.failure){
+        state = PhotoState.error;
+      }else if (event.type == StorageTaskEventType.progress){
+        int bytes = event.snapshot.bytesTransferred;
+        progess = bytes==0?null:bytes/event.snapshot.totalByteCount;
+        state = PhotoState.loading;
+      }
+      print({
+        "type": event.type,
+        "bytes": event.snapshot.bytesTransferred,
+        "total": event.snapshot.totalByteCount,
       });
+      setState((){});
+    });
     }
-  }
 
   pickImage(){
     showModalBottomSheet(
@@ -131,7 +127,7 @@ class PhotoUploaderState extends State<PhotoUploader>{
                     case PhotoState.loading:
                       return Center(
                         child: Theme(
-                          data: Theme.of(context).copyWith(accentColor: Colors.white),
+                          data: Theme.of(context).copyWith(colorScheme: ColorScheme.fromSwatch().copyWith(secondary: Colors.white)),
                           child: CircularProgressIndicator(
                             value: progess,
                           ),
@@ -205,7 +201,7 @@ class ProfileUpdateState extends State<ProfileUpdate>{
                 SliverToBoxAdapter(
                   child: Padding(
                     padding: EdgeInsets.only(left: 16, right: 16, top: 16),
-                    child: I18nText("Description", child:Text("Description", style: Theme.of(context).textTheme.bodyText1,))
+                    child: I18nText("Description", child:Text("Description", style: Theme.of(context).textTheme.bodyLarge,))
                   )
                 ),
                 SliverToBoxAdapter(
@@ -218,7 +214,7 @@ class ProfileUpdateState extends State<ProfileUpdate>{
                       textAlignVertical: TextAlignVertical.center,
                       decoration: InputDecoration(
                         floatingLabelBehavior: FloatingLabelBehavior.always,
-                        labelStyle: Theme.of(context).textTheme.headline5,
+                        labelStyle: Theme.of(context).textTheme.headlineSmall,
                         hintText: "Say Something About Yourself"
                       ),
                     ),
@@ -340,7 +336,7 @@ class ProfileState extends State<Profile>{
                             "You are on demo mode",
                             child: Text("", style: TextStyle(
                               color: Colors.white,
-                              fontSize: Theme.of(context).textTheme.subtitle2.fontSize
+                              fontSize: Theme.of(context).textTheme.titleSmall.fontSize
                             )),
                           ),
                         ),
@@ -356,7 +352,7 @@ class ProfileState extends State<Profile>{
                             child: Text("", style: TextStyle(
                               color: Colors.white, 
                               height: 1,
-                              fontSize: Theme.of(context).textTheme.subtitle2.fontSize,
+                              fontSize: Theme.of(context).textTheme.titleSmall.fontSize,
                               decoration: TextDecoration.underline
                             ))
                           ),
@@ -435,7 +431,7 @@ class ProfileState extends State<Profile>{
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        I18nText("Labels",child:Text("", style: Theme.of(context).textTheme.bodyText1)),
+                        I18nText("Labels",child:Text("", style: Theme.of(context).textTheme.bodyLarge)),
                         user.labels!=null?user.labels.length>0?GestureDetector(
                           onTap: (){
                             if(widget.standalone){
@@ -451,7 +447,7 @@ class ProfileState extends State<Profile>{
                               ));
                             }
                           },
-                          child: I18nText("Edit",child: Text("Edit", style: Theme.of(context).textTheme.bodyText1))
+                          child: I18nText("Edit",child: Text("Edit", style: Theme.of(context).textTheme.bodyLarge))
                         ):SizedBox():SizedBox(),
                       ]
                     )
@@ -496,7 +492,7 @@ class ProfileState extends State<Profile>{
                       Divider(indent: 16, endIndent: 16),
                       Padding(
                         padding: EdgeInsets.only(left: 16, top: 8, right: 16, bottom: 4),
-                        child: I18nText("Support",child:Text("", style: Theme.of(context).textTheme.bodyText1))
+                        child: I18nText("Support",child:Text("", style: Theme.of(context).textTheme.bodyLarge))
                       ),
                       Tile(
                         onTap: () => loadweb("https://the-good-text.com/help", context), 
@@ -511,7 +507,7 @@ class ProfileState extends State<Profile>{
                       Divider(indent: 16, endIndent: 16),
                       Padding(
                         padding: EdgeInsets.only(left: 16, top: 8, right: 16, bottom: 4),
-                        child: I18nText("About",child:Text("", style: Theme.of(context).textTheme.bodyText1))
+                        child: I18nText("About",child:Text("", style: Theme.of(context).textTheme.bodyLarge))
                       ),
                       Tile(
                         onTap: ()=> loadweb("https://the-good-text.com/legal/privacy-policy", context),
@@ -612,7 +608,7 @@ class ProfileState extends State<Profile>{
                             "v$version", 
                             style: TextStyle(
                               fontSize: 12, 
-                              color: Theme.of(context).textTheme.caption.color
+                              color: Theme.of(context).textTheme.bodySmall.color
                             )
                           ),
                         )

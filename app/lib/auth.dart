@@ -93,14 +93,11 @@ class GoodUser extends ChangeNotifier{
   }
 
   void cancelStreams(){
-    if(userStream!=null)
-      userStream.cancel();
+    userStream.cancel();
 
-    if(stream!=null)
-      stream.cancel();
+    stream.cancel();
 
-    if(labeledStream!=null)
-      labeledStream.cancel();
+    labeledStream.cancel();
   }
 
   @override
@@ -185,20 +182,16 @@ class GoodUser extends ChangeNotifier{
 
   List get labels{
     List lbs = data["labels"];
-    if(lbs!=null){
-      lbs.sort();
-    }
-
+    lbs.sort();
+  
     return lbs;
   }
 
   Future<Note> _getSharedNote(List<Note> notes, String sharedId)async{
     Note note;
 
-    if(notes!=null){
-      note = notes.firstWhere((n) => n.shareId == sharedId, orElse: () => null);
-    }
-
+    note = notes.firstWhere((n) => n.shareId == sharedId, orElse: () => null);
+  
     if(note == null){
       List<DocumentSnapshot> snapshots = (await FirebaseFirestore.instance.collectionGroup("notes")
       .where("is_sharing",isEqualTo: true)
@@ -249,17 +242,13 @@ class GoodUser extends ChangeNotifier{
 
     Map<String, dynamic> newData = {};
 
-    if(photoUrl != null)
-      newData["photo"] = photoUrl;
+    newData["photo"] = photoUrl;
 
-    if(displayName != null)
-      newData["name"] = displayName;
+    newData["name"] = displayName;
 
-    if(description != null)
-      newData["description"] = description;
+    newData["description"] = description;
 
-    if(labels != null)
-      newData["labels"] = labels;
+    newData["labels"] = labels;
 
     data.addAll(newData);
 
@@ -269,8 +258,7 @@ class GoodUser extends ChangeNotifier{
   }
 
   getLabeled(String label){
-    if(labeledStream != null)
-      labeledStream.cancel();
+    labeledStream.cancel();
 
     labeledStream = reference.collection("notes")
     .where("labels", arrayContains: label)
@@ -322,8 +310,7 @@ class GoodUser extends ChangeNotifier{
 
   updateLabel(String oldLabel, {String mergeWith, String newLabel}) async {
     labels.remove(oldLabel);
-    if(newLabel!=null)
-      labels.add(newLabel);
+    labels.add(newLabel);
 
     data["labels"] = labels;
     notifyListeners();
@@ -338,8 +325,7 @@ class GoodUser extends ChangeNotifier{
       batch.update(doc.reference, {"labels": FieldValue.arrayUnion([newLabel??mergeWith])});
     }
 
-    if(newLabel!=null)
-      batch.update(reference, {"labels": FieldValue.arrayUnion([newLabel])});
+    batch.update(reference, {"labels": FieldValue.arrayUnion([newLabel])});
     batch.update(reference, {"labels": FieldValue.arrayRemove([oldLabel])});
     
     await batch.commit();
@@ -415,10 +401,8 @@ class LoginState extends State<Login>{
       error = e.message;
     }
 
-    if(user != null){
-      Navigator.of(context).pop(true);
+    Navigator.of(context).pop(true);
     }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -523,13 +507,11 @@ class SignupState extends State<Signup>{
       error = e.message;
     }
 
-    if(user != null){
-      GoodUser gUser = Provider.of<GoodUser>(context, listen: false);
-      await gUser.init(user: user);
-      gUser.update(displayName: name.text);
-      Navigator.of(context).pop(true);
-    }
-    
+    GoodUser gUser = Provider.of<GoodUser>(context, listen: false);
+    await gUser.init(user: user);
+    gUser.update(displayName: name.text);
+    Navigator.of(context).pop(true);
+      
   }
 
   @override
@@ -718,7 +700,7 @@ class WelcomeState extends State<Welcome>{
                         child: Text("", style: TextStyle(
                             color: Colors.white,
                             decoration: TextDecoration.underline,
-                            fontSize: Theme.of(context).textTheme.subtitle2.fontSize,
+                            fontSize: Theme.of(context).textTheme.titleSmall.fontSize,
                           )
                         )
                       ),
@@ -726,7 +708,7 @@ class WelcomeState extends State<Welcome>{
                     SizedBox(height: 8),
                     Theme(
                       data: ThemeData(
-                        accentColor: Colors.white
+                        colorScheme: ColorScheme.fromSwatch().copyWith(secondary: Colors.white)
                       ),
                       child: loading?LinearProgressIndicator():SizedBox()
                     )

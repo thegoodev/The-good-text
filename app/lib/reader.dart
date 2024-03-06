@@ -4,7 +4,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:esys_flutter_share/esys_flutter_share.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:md_notes/labels.dart';
@@ -70,7 +69,7 @@ class ReaderState extends State<Reader>{
 
   getDate(BuildContext context){
 
-    Text date = Text("", style: TextStyle(color: Theme.of(context).textTheme.bodyText2.color.withOpacity(0.45)));
+    Text date = Text("", style: TextStyle(color: Theme.of(context).textTheme.bodyMedium.color.withOpacity(0.45)));
 
     if(note.lastEdit == null){
       return I18nText("Unknown Date", child: date);
@@ -213,15 +212,14 @@ class NormalBottomState extends State<NormalBottom>{
   }
 
   showSnackbar({String text, String action, void Function() onAction, void Function() onClose}){
-    bool hasAction = action!=null && onAction!=null;
+    bool hasAction = onAction!=null;
     Scaffold.of(context).showSnackBar(
       SnackBar(
         content: I18nText(text),
         action: hasAction?SnackBarAction(label: FlutterI18n.translate(context, action), onPressed: onAction):null,
       )
     ).closed.then((value){
-      if(onClose!=null)
-        onClose();
+      onClose();
     });
   }
 
@@ -585,8 +583,8 @@ class FileSharingState extends State<FileSharing>{
       curr = markdown;
 
     TextTheme textTheme = Theme.of(context).textTheme;
-    TextStyle baseline = textTheme.bodyText2;
-    TextStyle accent = textTheme.bodyText1;
+    TextStyle baseline = textTheme.bodyMedium;
+    TextStyle accent = textTheme.bodyLarge;
 
     return AlertDialog(
       title: I18nText("Send Copy"),
@@ -712,7 +710,7 @@ class LinkSharingState extends State<LinkSharing>{
                       )
                     ),
                     SizedBox(width: 16),
-                    I18nText(widget.note.isSharing?"Link Sharing On":"Link Sharing Off", child: Text("", style: Theme.of(context).textTheme.headline6),)
+                    I18nText(widget.note.isSharing?"Link Sharing On":"Link Sharing Off", child: Text("", style: Theme.of(context).textTheme.titleLarge),)
                   ],
                 ),
                 SizedBox(height: 16),
@@ -795,11 +793,11 @@ class AuthorBuilder extends StatelessWidget{
                             child: Text(
                               "", 
                               style: TextStyle(
-                                color: Theme.of(context).textTheme.bodyText2.color.withOpacity(0.45)
+                                color: Theme.of(context).textTheme.bodyMedium.color.withOpacity(0.45)
                               )
                             )
                           ),
-                          name!=null?Text(name, style: Theme.of(context).textTheme.headline6):SizedBox(),
+                          name!=null?Text(name, style: Theme.of(context).textTheme.titleLarge):SizedBox(),
                           description!=null?Text(description):SizedBox()
                         ],
                       )

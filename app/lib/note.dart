@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:flutter_i18n/flutter_i18n.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:md_notes/auth.dart';
 import 'package:md_notes/home.dart';
 import 'package:md_notes/overflow.dart';
@@ -237,7 +236,7 @@ class NoteMardown extends StatelessWidget{
   Widget checkBuilder(bool checked, BuildContext context){
     return Icon(
       checked ? Icons.check_box : Icons.check_box_outline_blank,
-      color: Theme.of(context).accentColor,
+      color: Theme.of(context).colorScheme.secondary,
     );
   }
 
@@ -252,7 +251,7 @@ class NoteMardown extends StatelessWidget{
             placeholder: (context, string) => AspectRatio(
               aspectRatio: 16/9,
               child: Container(
-                color: Theme.of(context).textTheme.bodyText2.color.withOpacity(0.12),
+                color: Theme.of(context).textTheme.bodyMedium.color.withOpacity(0.12),
               )
             ),
             errorWidget: (context, url, error) {
@@ -269,7 +268,7 @@ class NoteMardown extends StatelessWidget{
           ),
           title!=null?Padding(
             padding: EdgeInsets.only(top:8, bottom: 16),
-            child: Text("$title", style: TextStyle(color: Theme.of(context).textTheme.bodyText2.color.withOpacity(0.54), fontSize: 16),textAlign: TextAlign.center)
+            child: Text("$title", style: TextStyle(color: Theme.of(context).textTheme.bodyMedium.color.withOpacity(0.54), fontSize: 16),textAlign: TextAlign.center)
           ):SizedBox()
         ]
       )
@@ -277,7 +276,7 @@ class NoteMardown extends StatelessWidget{
   }
 
   TextStyle getBase(BuildContext context){
-    return Theme.of(context).textTheme.bodyText2;
+    return Theme.of(context).textTheme.bodyMedium;
   }
 
   MarkdownStyleSheet nss(BuildContext context){
@@ -310,7 +309,7 @@ class NoteMardown extends StatelessWidget{
         border: Border(
           left: BorderSide(
             width: 3, 
-            color: theme.accentColor
+            color: theme.colorScheme.secondary
           )
         )
       ),
@@ -564,11 +563,11 @@ class NoteWidget extends StatelessWidget{
   Color getBorderColor(BuildContext context, NoteState state){
     ThemeData theme = Theme.of(context);
 
-    if(state == NoteState.pinned) return theme.accentColor;
+    if(state == NoteState.pinned) return theme.colorScheme.secondary;
 
-    if(state == NoteState.archived) return theme.textTheme.bodyText2.color;
+    if(state == NoteState.archived) return theme.textTheme.bodyMedium.color;
 
-    return theme.textTheme.bodyText2.color.withOpacity(0.38);
+    return theme.textTheme.bodyMedium.color.withOpacity(0.38);
   }
 
   Widget getIcon(BuildContext context, NoteState state, bool showArchived){
@@ -577,13 +576,13 @@ class NoteWidget extends StatelessWidget{
     if(state == NoteState.pinned) return Transform.rotate( angle: -math.pi/4, child: Icon( 
       Icons.favorite, 
       size: 18,
-      color: theme.accentColor,
+      color: theme.colorScheme.secondary,
     ));
 
     if(state == NoteState.archived&&showArchived) return Icon(
       OMIcons.archive,
       size: 18, 
-      color: theme.textTheme.bodyText2.color, 
+      color: theme.textTheme.bodyMedium.color, 
     );
 
     return SizedBox();
@@ -664,7 +663,7 @@ class NoteLabelList extends StatelessWidget{
           child: Text(
             "$l", 
             maxLines: 1,
-            style: theme.textTheme.bodyText2.copyWith(height: 1)
+            style: theme.textTheme.bodyMedium.copyWith(height: 1)
           ),
         )).toList(),
       )

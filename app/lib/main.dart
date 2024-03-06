@@ -3,6 +3,7 @@ import 'package:connectivity_wrapper/connectivity_wrapper.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 import 'package:md_notes/archive.dart';
 import 'package:md_notes/auth.dart';
@@ -34,14 +35,10 @@ const lightPurple = Color(0xFFad87ff);
 const lighterPurple = Color(0xFFBD9EFF);
 
 ThemeData appTheme = ThemeData(
-    cursorColor: purple,
-    accentColor: purple,
     primaryColor: purple,
-    textSelectionHandleColor: purple,
-    toggleableActiveColor: purple,
     textTheme: TextTheme(
-      bodyText1: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-      bodyText2: TextStyle(fontSize: 16, height: 1.5)
+      bodyLarge: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+      bodyMedium: TextStyle(fontSize: 16, height: 1.5)
     ),
     snackBarTheme: SnackBarThemeData(
       actionTextColor: lighterPurple
@@ -51,36 +48,60 @@ ThemeData appTheme = ThemeData(
       color: Color(0xFFEBEBEB)
     ),
     appBarTheme: AppBarTheme(
-      textTheme: TextTheme(
-        headline6: TextStyle(
+      iconTheme: IconThemeData(color: Colors.black),
+      actionsIconTheme: IconThemeData(color: Colors.grey),
+      color: Colors.grey[50], toolbarTextStyle: TextTheme(
+        titleLarge: TextStyle(
           fontSize: 24, 
           fontWeight: FontWeight.w900,
           color: Colors.black
         )
-      ),
-      iconTheme: IconThemeData(color: Colors.black),
-      actionsIconTheme: IconThemeData(color: Colors.grey),
-      color: Colors.grey[50]
+      ).bodyMedium, titleTextStyle: TextTheme(
+        titleLarge: TextStyle(
+          fontSize: 24, 
+          fontWeight: FontWeight.w900,
+          color: Colors.black
+        )
+      ).titleLarge
     ),
     iconTheme: IconThemeData(
       color: Colors.grey
     ),
-    visualDensity: VisualDensity.adaptivePlatformDensity,
+    visualDensity: VisualDensity.adaptivePlatformDensity, textSelectionTheme: TextSelectionThemeData(cursorColor: purple, selectionHandleColor: purple,), checkboxTheme: CheckboxThemeData(
+ fillColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
+ if (states.contains(MaterialState.disabled)) { return null; }
+ if (states.contains(MaterialState.selected)) { return purple; }
+ return null;
+ }),
+ ), radioTheme: RadioThemeData(
+ fillColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
+ if (states.contains(MaterialState.disabled)) { return null; }
+ if (states.contains(MaterialState.selected)) { return purple; }
+ return null;
+ }),
+ ), switchTheme: SwitchThemeData(
+ thumbColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
+ if (states.contains(MaterialState.disabled)) { return null; }
+ if (states.contains(MaterialState.selected)) { return purple; }
+ return null;
+ }),
+ trackColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
+ if (states.contains(MaterialState.disabled)) { return null; }
+ if (states.contains(MaterialState.selected)) { return purple; }
+ return null;
+ }),
+ ), colorScheme: ColorScheme.fromSwatch().copyWith(secondary: purple),
   );
   
 Color _background = Colors.grey[900];
 Color _raised = Colors.grey[850];
 
 ThemeData dakTheme = ThemeData(
-    brightness: Brightness.dark,    
-    cursorColor: lightPurple,
-    accentColor: lightPurple,
+    brightness: Brightness.dark,
     primaryColor: lighterPurple,
-    textSelectionHandleColor: lightPurple,
-    toggleableActiveColor: lightPurple,
     textTheme: TextTheme(
-      bodyText1: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-      bodyText2: TextStyle(fontSize: 16, height: 1.5)
+      bodyLarge: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+      bodyMedium: TextStyle(fontSize: 16, height: 1.5)
     ),
     snackBarTheme: SnackBarThemeData(
       actionTextColor: purple
@@ -89,25 +110,50 @@ ThemeData dakTheme = ThemeData(
     cardTheme: CardTheme(
       color: _raised
     ),
-    bottomAppBarColor: _raised,
     canvasColor: _background,
     scaffoldBackgroundColor: _background,
     appBarTheme: AppBarTheme(
-      brightness: Brightness.dark,
-      textTheme: TextTheme(
-        headline6: TextStyle(
+      iconTheme: IconThemeData(color: Colors.white),
+      actionsIconTheme: IconThemeData(color: Colors.grey),
+      color: _background, systemOverlayStyle: SystemUiOverlayStyle.light, toolbarTextStyle: TextTheme(
+        titleLarge: TextStyle(
           fontSize: 24, 
           fontWeight: FontWeight.w900,
         )
-      ),
-      iconTheme: IconThemeData(color: Colors.white),
-      actionsIconTheme: IconThemeData(color: Colors.grey),
-      color: _background
+      ).bodyMedium, titleTextStyle: TextTheme(
+        titleLarge: TextStyle(
+          fontSize: 24, 
+          fontWeight: FontWeight.w900,
+        )
+      ).titleLarge
     ),
     iconTheme: IconThemeData(
       color: Colors.grey
     ),
-    visualDensity: VisualDensity.adaptivePlatformDensity,
+    visualDensity: VisualDensity.adaptivePlatformDensity, textSelectionTheme: TextSelectionThemeData(cursorColor: lightPurple, selectionHandleColor: lightPurple,), colorScheme: ColorScheme.fromSwatch().copyWith(secondary: lightPurple), checkboxTheme: CheckboxThemeData(
+ fillColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
+ if (states.contains(MaterialState.disabled)) { return null; }
+ if (states.contains(MaterialState.selected)) { return lightPurple; }
+ return null;
+ }),
+ ), radioTheme: RadioThemeData(
+ fillColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
+ if (states.contains(MaterialState.disabled)) { return null; }
+ if (states.contains(MaterialState.selected)) { return lightPurple; }
+ return null;
+ }),
+ ), switchTheme: SwitchThemeData(
+ thumbColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
+ if (states.contains(MaterialState.disabled)) { return null; }
+ if (states.contains(MaterialState.selected)) { return lightPurple; }
+ return null;
+ }),
+ trackColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
+ if (states.contains(MaterialState.disabled)) { return null; }
+ if (states.contains(MaterialState.selected)) { return lightPurple; }
+ return null;
+ }),
+ ), bottomAppBarTheme: BottomAppBarTheme(color: _raised),
   );
 
 Widget userProvider(ThemeMode mode){
