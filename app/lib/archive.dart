@@ -10,7 +10,7 @@ import 'package:flutter_i18n/flutter_i18n.dart';
 GlobalKey<ScaffoldState> archiveScaffold = GlobalKey<ScaffoldState>();
 
 class Archive extends StatefulWidget {
-  Archive(Key key) : super(key: key);
+  Archive();
 
   @override
   _ArchiveState createState() => _ArchiveState();
