@@ -1,10 +1,7 @@
-import 'package:connectivity_wrapper/connectivity_wrapper.dart';
+/*
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:md_notes/auth.dart';
-import 'package:outline_material_icons/outline_material_icons.dart';
 
 import 'main.dart';
 
@@ -277,4 +274,4 @@ class Responsive extends StatelessWidget{
     );
   }
 
-} 
+*/
