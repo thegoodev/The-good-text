@@ -88,11 +88,18 @@ class AdaptiveNavigation extends StatelessWidget {
     if (width <= 840) {
       return Scaffold(
         appBar: AppBar(),
-        drawer: CustomMenu(
-          expanded: true,
-          header: UserProfile(),
-          items: items,
-          destination: path,
+        drawer: Padding(
+          padding: const EdgeInsets.only(right: 80.0),
+          child: CustomMenu(
+            expanded: true,
+            header: UserProfile(),
+            items: items,
+            destination: path,
+            onDestinationSelected: (path) {
+              context.pop();
+              go(context, path);
+            },
+          ),
         ),
         body: child,
       );
@@ -171,73 +178,77 @@ class CustomMenu extends StatelessWidget {
       width: expanded ? 360 : 80,
       height: double.infinity,
       child: SurfaceContainer.low(
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              if (expanded) header ?? SizedBox(),
-              SizedBox(
-                height: 24,
-              ),
-              if (!expanded)
-                Padding(
-                  padding: const EdgeInsets.only(
-                    top: 12,
-                    left: 28.0,
-                    right: 28.0,
-                    bottom: 32.0,
-                  ),
-                  child: Icon(Icons.menu),
+        child: SafeArea(
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (expanded) header ?? SizedBox(),
+                SizedBox(
+                  height: 24,
                 ),
-              ...items.map<Widget>((item) {
-                if (item is MenuDestination) {
-                  bool isSelected =
-                      destination.toLowerCase == item.path.toLowerCase;
+                if (!expanded)
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      top: 12,
+                      left: 28.0,
+                      right: 28.0,
+                      bottom: 32.0,
+                    ),
+                    child: Icon(Icons.menu),
+                  ),
+                ...items.map<Widget>((item) {
+                  if (item is MenuDestination) {
+                    bool isSelected =
+                        destination.toLowerCase == item.path.toLowerCase;
+                    if (expanded) {
+                      return DrawerTile(
+                        icon: item.icon,
+                        label: item.label,
+                        selected: isSelected,
+                        onTap: () =>
+                            (onDestinationSelected ?? (_) {})(item.path),
+                      );
+                    } else {
+                      return RailTile(
+                        icon: item.icon,
+                        label: item.label,
+                        selected: isSelected,
+                        onTap: () =>
+                            (onDestinationSelected ?? (_) {})(item.path),
+                      );
+                    }
+                  }
+
                   if (expanded) {
-                    return DrawerTile(
-                      icon: item.icon,
-                      label: item.label,
-                      selected: isSelected,
-                      onTap: () => (onDestinationSelected ?? (_) {})(item.path),
-                    );
-                  } else {
-                    return RailTile(
-                      icon: item.icon,
-                      label: item.label,
-                      selected: isSelected,
-                      onTap: () => (onDestinationSelected ?? (_) {})(item.path),
-                    );
+                    if (item is MenuAction) {
+                      return DrawerTile(
+                        icon: item.icon,
+                        label: item.label,
+                        onTap: item.onTap,
+                      );
+                    } else if (item is SectionLabel) {
+                      return Padding(
+                        padding:
+                            EdgeInsets.symmetric(vertical: 8, horizontal: 28),
+                        child: Text(
+                          item.label,
+                          style: Theme.of(context).textTheme.labelLarge,
+                        ),
+                      );
+                    } else if (item is MenuDivider) {
+                      return Divider(
+                        height: 32,
+                        indent: 28,
+                        endIndent: 28,
+                      );
+                    }
                   }
-                }
 
-                if (expanded) {
-                  if (item is MenuAction) {
-                    return DrawerTile(
-                      icon: item.icon,
-                      label: item.label,
-                      onTap: item.onTap,
-                    );
-                  } else if (item is SectionLabel) {
-                    return Padding(
-                      padding:
-                          EdgeInsets.symmetric(vertical: 8, horizontal: 28),
-                      child: Text(
-                        item.label,
-                        style: Theme.of(context).textTheme.labelLarge,
-                      ),
-                    );
-                  } else if (item is MenuDivider) {
-                    return Divider(
-                      height: 32,
-                      indent: 28,
-                      endIndent: 28,
-                    );
-                  }
-                }
-
-                return SizedBox();
-              })
-            ],
+                  return SizedBox();
+                })
+              ],
+            ),
           ),
         ),
       ),
