@@ -5,13 +5,12 @@ import 'package:go_router/go_router.dart';
 
 import '../widgets/header.dart';
 
-class Login extends StatefulWidget{
+class Login extends StatefulWidget {
   @override
   LoginState createState() => LoginState();
 }
 
-class LoginState extends State<Login>{
-
+class LoginState extends State<Login> {
   bool obscureText = true, loading = false, remember = false;
   String? error;
 
@@ -25,27 +24,28 @@ class LoginState extends State<Login>{
 
     User? user;
 
-    try{
+    try {
       FirebaseAuth auth = FirebaseAuth.instance;
 
-      if(kIsWeb){
-        if(remember){
+      if (kIsWeb) {
+        if (remember) {
           await auth.setPersistence(Persistence.LOCAL);
-        }else{
+        } else {
           await auth.setPersistence(Persistence.NONE);
         }
       }
 
-      user = (await auth
-          .signInWithEmailAndPassword(
-          email: email.text.trim(), password: password.text
-      )).user;
-    }on FirebaseAuthException catch(e){
-     error = e.message;
-    }finally{
-      setState(() {
-        loading = false;
-      });
+      user = (await auth.signInWithEmailAndPassword(
+              email: email.text.trim(), password: password.text))
+          .user;
+    } on FirebaseAuthException catch (e) {
+      error = e.message;
+    } finally {
+      if (mounted) {
+        setState(() {
+          loading = false;
+        });
+      }
     }
 
     context.go('/');
@@ -59,7 +59,7 @@ class LoginState extends State<Login>{
         children: [
           Padding(
             padding: EdgeInsets.symmetric(vertical: 16),
-            child: error!=null?Text(error!):SizedBox(),
+            child: error != null ? Text(error!) : SizedBox(),
           ),
           SizedBox(height: 16),
           TextField(
@@ -68,8 +68,7 @@ class LoginState extends State<Login>{
             decoration: InputDecoration(
                 contentPadding: EdgeInsets.zero,
                 prefixIcon: Icon(Icons.mail_outline),
-                hintText: "Email"
-            ),
+                hintText: "Email"),
           ),
           SizedBox(height: 16),
           TextField(
@@ -80,36 +79,39 @@ class LoginState extends State<Login>{
                 contentPadding: EdgeInsets.zero,
                 prefixIcon: Icon(Icons.lock_outline),
                 suffixIcon: GestureDetector(
-                    onTap: () => setState((){
-                      obscureText = !obscureText;
-                    }),
-                    child: Icon(obscureText?Icons.visibility:Icons.visibility_off)
-                ),
-                hintText: "Password"
-            ),
+                    onTap: () => setState(() {
+                          obscureText = !obscureText;
+                        }),
+                    child: Icon(
+                        obscureText ? Icons.visibility : Icons.visibility_off)),
+                hintText: "Password"),
           ),
           Row(
             children: [
-              kIsWeb?Expanded(
-                child: Row(
-                  children: [
-                    Checkbox(value: remember, onChanged: (value){
-                      setState(() {
-                        if(value!= null){
-                          remember = value;
-                        }
-                      });
-                    }),
-                    Text("Remember me")
-                  ],
-                ),
-              ):SizedBox(),
+              kIsWeb
+                  ? Expanded(
+                      child: Row(
+                        children: [
+                          Checkbox(
+                              value: remember,
+                              onChanged: (value) {
+                                setState(() {
+                                  if (value != null) {
+                                    remember = value;
+                                  }
+                                });
+                              }),
+                          Text("Remember me")
+                        ],
+                      ),
+                    )
+                  : SizedBox(),
             ],
           ),
           SizedBox(height: 24),
           FilledButton(onPressed: login, child: Text("Login")),
           SizedBox(height: 16),
-          loading?LinearProgressIndicator():SizedBox()
+          loading ? LinearProgressIndicator() : SizedBox()
         ],
       ),
     );
