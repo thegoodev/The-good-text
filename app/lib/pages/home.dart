@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:md_notes/models/note.dart';
-import 'package:md_notes/blocs/homeBloc.dart';
+import 'package:md_notes/blocs/home.dart';
 import 'package:md_notes/widgets/note_card.dart';
+import 'package:md_notes/widgets/note_list.dart';
 import 'package:md_notes/widgets/profile_pic.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
@@ -18,7 +20,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    bloc.fetchAllNotes();
+    bloc.fetchMainNotes();
   }
 
   @override
@@ -27,40 +29,39 @@ class _HomePageState extends State<HomePage> {
     super.dispose();
   }
 
+  Future<void> createNote() async {
+    Note note = await bloc.createNote();
+    print(note);
+    context.go("/n/${note.id}/edit", extra: note);
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: StreamBuilder<List<NoteModel>>(
-          stream: bloc.allNotes,
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              final List<NoteModel> notes = snapshot.data!;
+    return StreamBuilder<List<Note>>(
+      stream: bloc.notes,
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          final List<Note> notes = snapshot.data!;
 
-              return CustomScrollView(
-                slivers: [
-                  SliverPadding(
-                    padding: const EdgeInsets.all(16.0),
-                    sliver: SliverMasonryGrid.count(
-                      crossAxisCount: 2,
-                      crossAxisSpacing: 8.0,
-                      mainAxisSpacing: 8.0,
-                      childCount: notes.length,
-                      itemBuilder: (context, index) {
-                        return NoteCard(note: notes[index]);
-                      },
-                    ),
-                  ),
-                ],
-              );
-            }
+          return Scaffold(
+            body: RefreshIndicator(
+              onRefresh: bloc.fetchMainNotes,
+              child: CustomScrollView(
+                slivers: [NoteList(notes: notes)],
+              ),
+            ),
+            floatingActionButton: FloatingActionButton.extended(
+              onPressed: createNote,
+              icon: Icon(Icons.add),
+              label: Text("New Note"),
+            ),
+          );
+        }
 
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-          },
-        ),
-      ),
+        return Center(
+          child: CircularProgressIndicator(),
+        );
+      },
     );
   }
 }
