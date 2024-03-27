@@ -1,11 +1,26 @@
-class NoteModel {
-  String body,id, author;
-  DateTime lastEdit;
+enum NoteState {
+  favorite,
+  normal,
+  archived,
+  deleted,
+}
 
-  NoteModel({
+class Note {
+  NoteState state;
+  List<String> labels;
+  late DateTime lastEdit;
+  String body, id, author;
+
+  Note({
     required this.id,
-    required this.body,
     required this.author,
-    required this.lastEdit,
-  });
+    this.body = "",
+    DateTime? lastEdit,
+    this.labels = const [],
+    this.state = NoteState.normal,
+  }) {
+    this.lastEdit = lastEdit ?? DateTime.now();
+  }
+
+  bool get isFavorite => state == NoteState.favorite;
 }
