@@ -1,9 +1,54 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:md_notes/blocs/archive.dart';
+import 'package:md_notes/blocs/trash.dart';
 import 'package:md_notes/models/note.dart';
-import 'package:md_notes/ui.dart';
+import 'package:md_notes/widgets/note_list.dart';
 
-GlobalKey<ScaffoldState> trashScaffold = GlobalKey<ScaffoldState>();
+GlobalKey<ScaffoldState> archiveScaffold = GlobalKey<ScaffoldState>();
+
+class Trash extends StatefulWidget {
+  Trash();
+
+  @override
+  _ArchiveState createState() => _ArchiveState();
+}
+
+class _ArchiveState extends State<Trash> {
+  TrashBloc bloc = TrashBloc();
+
+  @override
+  Widget build(BuildContext context) {
+    ColorScheme colorScheme = Theme.of(context).colorScheme;
+
+    print(colorScheme.primaryContainer);
+    print(colorScheme.secondary);
+
+    return StreamBuilder<List<Note>>(
+      stream: bloc.notes,
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          List<Note> notes = snapshot.data!;
+
+          return Material(
+            child: CustomScrollView(
+              slivers: [
+                NoteList(notes: notes),
+              ],
+            ),
+          );
+        }
+
+        return Material(
+          child: Center(
+            child: CircularProgressIndicator(),
+          ),
+        );
+      },
+    );
+  }
+}
+
+/*GlobalKey<ScaffoldState> trashScaffold = GlobalKey<ScaffoldState>();
 
 class Trash extends StatefulWidget {
   Trash();
@@ -15,7 +60,7 @@ class Trash extends StatefulWidget {
 class _TrashState extends State<Trash> {
   @override
   Widget build(BuildContext context) {
-    List<NoteModel> notes = [];
+    List<Note> notes = [];
 
     return Scaffold(
       key: trashScaffold,
@@ -80,4 +125,4 @@ class _TrashState extends State<Trash> {
       ),
     );
   }
-}
+}*/
