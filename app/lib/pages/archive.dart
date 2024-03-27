@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:md_notes/blocs/archive.dart';
 import 'package:md_notes/models/note.dart';
+import 'package:md_notes/widgets/note_list.dart';
 
 GlobalKey<ScaffoldState> archiveScaffold = GlobalKey<ScaffoldState>();
 
@@ -11,45 +13,31 @@ class Archive extends StatefulWidget {
 }
 
 class _ArchiveState extends State<Archive> {
-  List<NoteModel> notes = [];
+  ArchiveBloc bloc = ArchiveBloc();
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      key: archiveScaffold,
-      body: SafeArea(
-        child: Builder(
-          builder: (context) {
-            if (notes == null) {
-              return Center(
-                child: CircularProgressIndicator(),
-              );
-            }
+    return StreamBuilder<List<Note>>(
+      stream: bloc.notes,
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          List<Note> notes = snapshot.data!;
 
-            /*NoteSource source =
-                NoteSource(key: archiveScaffold, name: "/archive");
-            notes.forEach((note) {
-              note.source = source;
-            });*/
-
-            return CustomScrollView(
+          return Material(
+            child: CustomScrollView(
               slivers: [
-                SliverAppBar(
-                  title: Text("Archive"),
-                ),
-                /*
-                EmptySliver(
-                  show: notes.length == 0,
-                  name: "filling_system",
-                  body: "Nothing in archive",
-                ),
-                */
-                //Note list notes
+                NoteList(notes: notes),
               ],
-            );
-          },
-        ),
-      ),
+            ),
+          );
+        }
+
+        return Material(
+          child: Center(
+            child: CircularProgressIndicator(),
+          ),
+        );
+      },
     );
   }
 }
