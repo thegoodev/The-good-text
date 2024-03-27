@@ -13,32 +13,39 @@ Map<SurfaceRole, double> elevation = {
 class SurfaceContainer extends StatelessWidget {
   // 0
   SurfaceContainer.lowest({
+    this.borderRadius,
     required this.child,
   }) : role = SurfaceRole.lowest;
   // +1
   SurfaceContainer.low({
+    this.borderRadius,
     required this.child,
   }) : role = SurfaceRole.low;
   // +2
   SurfaceContainer({
+    this.borderRadius,
     required this.child,
   }) : role = SurfaceRole.container;
   // +3
   SurfaceContainer.high({
+    this.borderRadius,
     required this.child,
   }) : role = SurfaceRole.high;
   // Surface variant
   SurfaceContainer.highest({
+    this.borderRadius,
     required this.child,
   }) : role = SurfaceRole.highest;
 
   final Widget child;
   final SurfaceRole role;
+  final BorderRadiusGeometry? borderRadius;
 
   @override
   Widget build(BuildContext context) {
     ColorScheme colorScheme = Theme.of(context).colorScheme;
     return Material(
+      borderRadius: borderRadius,
       elevation: elevation[role] ?? 0,
       type: MaterialType.card,
       color: role == SurfaceRole.highest
