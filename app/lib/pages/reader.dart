@@ -1,35 +1,34 @@
+import 'dart:async';
+
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
-import 'package:md_notes/blocs/noteBloc.dart';
+import 'package:md_notes/blocs/note.dart';
 import 'package:md_notes/models/note.dart';
+import 'package:md_notes/widgets/markdown.dart';
 
 class ReadingMode extends StatefulWidget {
-  ReadingMode({
-    required this.id,
-    required this.note,
-  });
-  final String id;
-  final NoteModel? note;
+  ReadingMode({required this.state});
+  final GoRouterState state;
 
   @override
   State<StatefulWidget> createState() => _ReadingModeState();
 }
 
 class _ReadingModeState extends State<ReadingMode> {
-  NoteBloc bloc = NoteBloc();
+  Note? note;
+  late Stream<Note?> updates;
+  final NoteBloc bloc = NoteBloc();
 
   @override
   void initState() {
-    bloc.fetchNote(widget.id);
-    super.initState();
-  }
+    String id = widget.state.pathParameters["id"]!;
+    note = widget.state.extra as Note?;
 
-  @override
-  void dispose() {
-    bloc.dispose();
-    super.dispose();
+    updates = bloc.fetchNote(id);
+
+    super.initState();
   }
 
   String formatDate(DateTime time) {
@@ -60,102 +59,89 @@ class _ReadingModeState extends State<ReadingMode> {
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
     TextTheme textTheme = themeData.textTheme;
+    ColorScheme colors = themeData.colorScheme;
 
-    return StreamBuilder<NoteModel?>(
-        stream: bloc.note,
-        initialData: widget.note,
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            final NoteModel note = snapshot.data!;
+    return StreamBuilder<Note?>(
+      stream: updates,
+      initialData: note,
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          final Note note = snapshot.data!;
 
-            return Scaffold(
-              body: SafeArea(
-                child: CustomScrollView(
-                  slivers: [
-                    SliverAppBar(
-                      floating: true,
+          return Scaffold(
+            body: SafeArea(
+              child: CustomScrollView(
+                slivers: [
+                  SliverAppBar(
+                    floating: true,
+                  ),
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: EdgeInsets.only(
+                        top: 4.0,
+                        left: 24.0,
+                        right: 24.0,
+                      ),
+                      child: Text(
+                        "Edited ${formatDate(note.lastEdit)}",
+                        style: textTheme.labelMedium,
+                      ),
                     ),
-                    SliverToBoxAdapter(
-                      child: Padding(
-                        padding: EdgeInsets.only(
-                          left: 24,
-                          right: 24,
-                          top: 24,
-                        ),
-                        child: Text(
-                          "Edited ${formatDate(note.lastEdit)}",
-                          style: textTheme.labelMedium,
+                  ),
+                  SliverPadding(
+                    padding: EdgeInsets.symmetric(
+                      vertical: 8.0,
+                      horizontal: 24.0,
+                    ),
+                    sliver: SliverMarkdown(
+                      data: note.body,
+                      styleSheet: MarkdownStyleSheet(
+                        horizontalRuleDecoration: BoxDecoration(
+                          border: Border(
+                            top: BorderSide(
+                              width: 1.0,
+                              color: colors.outlineVariant,
+                            ),
+                          ),
                         ),
                       ),
                     ),
-                    SliverPadding(
-                      padding: EdgeInsets.symmetric(
-                        vertical: 8,
-                        horizontal: 24,
-                      ),
-                      sliver: MarkdownSliver(
-                        data: note.body,
-                        styleSheet: MarkdownStyleSheet(
-                          p: textTheme.bodyMedium,
-                        ),
-                      ),
+                  ),
+                ],
+              ),
+            ),
+            floatingActionButtonLocation:
+                FloatingActionButtonLocation.endDocked,
+            floatingActionButton: FloatingActionButton(
+              onPressed: () {
+                context.go("/n/${note.id}/edit", extra: note);
+              },
+              child: Icon(Icons.edit_note),
+            ),
+            bottomNavigationBar: BottomAppBar(
+              height: 56,
+              padding: EdgeInsets.symmetric(horizontal: 16),
+              shape: CircularNotchedRectangle(),
+              child: Row(
+                children: [
+                  IconButton(
+                    onPressed: () {},
+                    icon: Icon(
+                      note.isFavorite ? Icons.favorite : Icons.favorite_border,
                     ),
-                  ],
-                ),
+                  )
+                ],
               ),
-              floatingActionButtonLocation:
-                  FloatingActionButtonLocation.endDocked,
-              floatingActionButton: FloatingActionButton(
-                onPressed: () {
-                  context.go("/n/${note.id}/edit", extra: note);
-                },
-                child: Icon(Icons.edit),
-              ),
-              bottomNavigationBar: BottomAppBar(
-                height: 56,
-                padding: EdgeInsets.symmetric(horizontal: 16),
-                shape: CircularNotchedRectangle(),
-                child: Row(
-                  children: [
-                    IconButton(
-                      onPressed: () {},
-                      icon: Icon(Icons.favorite_border_outlined),
-                    )
-                  ],
-                ),
-              ),
-            );
-          }
-
-          return Material(
-            child: Center(
-              child: CircularProgressIndicator(),
             ),
           );
-        });
-  }
-}
+        }
 
-class MarkdownSliver extends MarkdownWidget {
-  /// Creates a sliver widget that parses and displays Markdown.
-  const MarkdownSliver({
-    required String data,
-    MarkdownStyleSheet? styleSheet,
-  }) : super(
-          data: data,
-          styleSheet: styleSheet,
+        return Material(
+          child: Center(
+            child: CircularProgressIndicator(),
+          ),
         );
-
-  @override
-  Widget build(BuildContext context, List<Widget>? children) {
-    if (children != null) {
-      return SliverList(
-        delegate: SliverChildListDelegate(children),
-      );
-    }
-
-    return SliverToBoxAdapter(
-      child: SizedBox(),
+      },
     );
   }
 }
