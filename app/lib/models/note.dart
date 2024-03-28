@@ -23,4 +23,6 @@ class Note {
   }
 
   bool get isFavorite => state == NoteState.favorite;
+  bool get isArchived => state == NoteState.archived;
+  bool get isDeleted => state == NoteState.deleted;
 }
