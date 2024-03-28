@@ -68,14 +68,12 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-    - assets/svg/blank_canvas.svg
-    - assets/svg/filling_system.svg
-    - assets/svg/throw_away.svg
-    - assets/svg/offline.svg
+    - images/logo.png
+    - assets/undraw_blank_canvas.png
+    - assets/undraw_my_files.png
+    - assets/undraw_throw_away.png
     - assets/background.png
-    - assets/2x/background.png
-    - assets/3x/background.png
-    - assets/launcher/isotipo.svg
+    - assets/clouds.png
     - assets/i18n/
 
   # An image asset can refer to one or more resolution-specific "variants", see
