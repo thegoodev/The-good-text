@@ -1,118 +1,213 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:go_router/go_router.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
-import '../widgets/header.dart';
 
-class Login extends StatefulWidget {
+class Login extends StatefulWidget{
   @override
-  LoginState createState() => LoginState();
+  State<Login> createState() => _LoginState();
 }
 
-class LoginState extends State<Login> {
-  bool obscureText = true, loading = false, remember = false;
-  String? error;
+class _LoginState extends State<Login> {
+  bool _busy = false;
+  String? _emailError, _passwordError;
 
-  TextEditingController email = TextEditingController();
-  TextEditingController password = TextEditingController();
+  TextEditingController _emailController = TextEditingController(),
+      _passwordController = TextEditingController();
 
-  login() async {
+  void login() async {
+
     setState(() {
-      loading = true;
+      _busy = true;
+      _emailError = null;
+      _passwordError = null;
     });
 
-    User? user;
+    try{
+      UserCredential credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: _emailController.text,
+        password: _passwordController.text,
+      );
 
-    try {
-      FirebaseAuth auth = FirebaseAuth.instance;
+      print(credential.user);
 
-      if (kIsWeb) {
-        if (remember) {
-          await auth.setPersistence(Persistence.LOCAL);
-        } else {
-          await auth.setPersistence(Persistence.NONE);
-        }
-      }
+      context.go("/");
+    }on FirebaseAuthException catch (e){
+      setState(() {
+       _busy = false;
+      });
 
-      user = (await auth.signInWithEmailAndPassword(
-              email: email.text.trim(), password: password.text))
-          .user;
-    } on FirebaseAuthException catch (e) {
-      error = e.message;
-    } finally {
-      if (mounted) {
-        setState(() {
-          loading = false;
-        });
+      switch(e.code){
+        case "invalid-email":
+        case "user-not-found":
+        case "user-disabled":
+          setState(() {
+            _emailError = e.message;
+          });
+          break;
+        case "wrong-password":
+          setState(() {
+            _passwordError = e.message;
+          });
+          break;
+        default:
+          print("Code: ${e.code}, Message: ${e.message}");
+          break;
       }
     }
 
-    context.go('/');
   }
 
   @override
   Widget build(BuildContext context) {
+    ColorScheme colorScheme = Theme.of(context).colorScheme;
+
     return Scaffold(
-      body: CoolHeader(
-        text: "Welcome Back",
+      body: Stack(
         children: [
-          Padding(
-            padding: EdgeInsets.symmetric(vertical: 16),
-            child: error != null ? Text(error!) : SizedBox(),
+          Positioned(
+            left: 0,
+            right: 0,
+            child: Image.asset(
+              "assets/background.png",
+              fit: BoxFit.cover,
+            ),
           ),
-          SizedBox(height: 16),
-          TextField(
-            controller: email,
-            textAlignVertical: TextAlignVertical.center,
-            decoration: InputDecoration(
-                contentPadding: EdgeInsets.zero,
-                prefixIcon: Icon(Icons.mail_outline),
-                hintText: "Email"),
+          Positioned(
+            bottom: 0,
+            child: Image.asset("assets/clouds.png"),
           ),
-          SizedBox(height: 16),
-          TextField(
-            obscureText: obscureText,
-            controller: password,
-            textAlignVertical: TextAlignVertical.center,
-            decoration: InputDecoration(
-                contentPadding: EdgeInsets.zero,
-                prefixIcon: Icon(Icons.lock_outline),
-                suffixIcon: GestureDetector(
-                    onTap: () => setState(() {
-                          obscureText = !obscureText;
-                        }),
-                    child: Icon(
-                        obscureText ? Icons.visibility : Icons.visibility_off)),
-                hintText: "Password"),
-          ),
-          Row(
-            children: [
-              kIsWeb
-                  ? Expanded(
-                      child: Row(
-                        children: [
-                          Checkbox(
-                              value: remember,
-                              onChanged: (value) {
-                                setState(() {
-                                  if (value != null) {
-                                    remember = value;
-                                  }
-                                });
-                              }),
-                          Text("Remember me")
-                        ],
+          SafeArea(
+            child: Center(
+              child:SingleChildScrollView(
+                padding: const EdgeInsets.all(24.0),
+                child: Form(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 32.0),
+                        child:  Image.asset("images/logo.png", height: 48),
                       ),
-                    )
-                  : SizedBox(),
-            ],
+                      RichText(
+                        text: TextSpan(
+                          text: 'Ingresa tus datos para ',
+                          children: const <TextSpan>[
+                            TextSpan(
+                              text: 'Iniciar Sesión',
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: 24),
+                      EmailTextField(
+                        error: _emailError,
+                        controller: _emailController,
+                      ),
+                      SizedBox(height: 24),
+                      PasswordTextField(
+                        error: _passwordError,
+                        controller: _passwordController,
+                      ),
+                      SizedBox(height: 12.0),
+                      Align(
+                        alignment: Alignment.bottomRight,
+                        child: ElevatedButton(
+                          onPressed: _busy? null :login,
+                          child: Text(_busy?"LOADING...":"LOGIN"),
+                        ),
+                      )
+                    ],
+                  ),
+                )
+              ),
+            ),
           ),
-          SizedBox(height: 24),
-          FilledButton(onPressed: login, child: Text("Login")),
-          SizedBox(height: 16),
-          loading ? LinearProgressIndicator() : SizedBox()
         ],
+      ),
+    );
+  }
+}
+
+class EmailTextField extends StatelessWidget{
+
+  EmailTextField({
+    this.error,
+    required this.controller,
+  });
+
+  final String? error;
+  final TextEditingController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    return TextFormField(
+      controller: controller,
+      autofillHints: [
+        AutofillHints.email,
+      ],
+      keyboardType: TextInputType.emailAddress,
+      decoration: InputDecoration(
+        filled: true,
+        errorText: error,
+        labelText: "Email",
+        prefixIcon: Icon(Icons.alternate_email_outlined),
+      ),
+    );
+  }
+}
+
+class PasswordTextField extends StatefulWidget{
+  PasswordTextField({
+    this.error,
+    required this.controller,
+  });
+
+  final String? error;
+  final TextEditingController controller;
+
+  @override
+  State<StatefulWidget> createState() => _PasswordTextFieldState();
+}
+
+class _PasswordTextFieldState extends State<PasswordTextField>{
+
+  bool obscureText = true;
+
+  toggleObscureText(){
+    setState(() {
+      obscureText = !obscureText;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+
+    ColorScheme colorScheme = Theme.of(context).colorScheme;
+
+    return TextFormField(
+      autofillHints: [
+        AutofillHints.password,
+      ],
+      controller: widget.controller,
+      obscureText: obscureText,
+      keyboardType: TextInputType.visiblePassword,
+      decoration: InputDecoration(
+        filled: true,
+        errorText: widget.error,
+        labelText: "Password",
+        prefixIcon: Icon(Icons.lock_outline),
+        suffix: GestureDetector(
+          child: Icon(
+              obscureText ?
+              Icons.visibility_outlined :
+              Icons.visibility_off_outlined,
+            color: colorScheme.onSurfaceVariant,
+          ),
+          onTap: toggleObscureText,
+        )
       ),
     );
   }
