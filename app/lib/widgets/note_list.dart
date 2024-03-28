@@ -19,7 +19,7 @@ class NoteList extends StatelessWidget {
       ),
       sliver: SliverMasonryGrid.count(
         crossAxisCount: 2,
-        crossAxisSpacing: 8.0,
+        crossAxisSpacing: 12.0,
         mainAxisSpacing: 8.0,
         childCount: notes.length,
         itemBuilder: (context, index) {

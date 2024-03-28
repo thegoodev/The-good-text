@@ -39,7 +39,7 @@ class MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp.router(
       title: 'The Good Text',
-      themeMode: ThemeMode.dark,
+      themeMode: ThemeMode.system,
       theme: ThemeData.from(
         colorScheme: ColorScheme.fromSeed(
           seedColor: Color(0xff543c70),
