@@ -2,12 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:md_notes/models/note.dart';
 import 'package:md_notes/blocs/home.dart';
-import 'package:md_notes/widgets/note_card.dart';
+import 'package:md_notes/widgets/menu.dart';
 import 'package:md_notes/widgets/note_list.dart';
 import 'package:md_notes/widgets/profile_pic.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -37,23 +36,31 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+
+    CustomMenu? menu = MenuDrawer.maybeOf(context);
+
     return StreamBuilder<List<Note>>(
       stream: bloc.notes,
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           final List<Note> notes = snapshot.data!;
-
           return Scaffold(
+            drawer: menu,
             body: RefreshIndicator(
               onRefresh: bloc.fetchMainNotes,
               child: CustomScrollView(
-                slivers: [NoteList(notes: notes)],
+                slivers: [
+                  SliverAppBar(
+                    title: Text("Hey, Moisés"),
+                  ),
+                  NoteList(notes: notes),
+                ],
               ),
             ),
             floatingActionButton: FloatingActionButton.extended(
               onPressed: createNote,
               icon: Icon(Icons.add),
-              label: Text("New Note"),
+              label: Text("Create Note"),
             ),
           );
         }

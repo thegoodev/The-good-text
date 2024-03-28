@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:md_notes/blocs/archive.dart';
 import 'package:md_notes/blocs/trash.dart';
 import 'package:md_notes/models/note.dart';
+import 'package:md_notes/widgets/menu.dart';
 import 'package:md_notes/widgets/note_list.dart';
 
 GlobalKey<ScaffoldState> archiveScaffold = GlobalKey<ScaffoldState>();
@@ -18,6 +18,7 @@ class _ArchiveState extends State<Trash> {
 
   @override
   Widget build(BuildContext context) {
+    CustomMenu? menu = MenuDrawer.maybeOf(context);
     ColorScheme colorScheme = Theme.of(context).colorScheme;
 
     print(colorScheme.primaryContainer);
@@ -29,9 +30,25 @@ class _ArchiveState extends State<Trash> {
         if (snapshot.hasData) {
           List<Note> notes = snapshot.data!;
 
-          return Material(
-            child: CustomScrollView(
+          return Scaffold(
+            drawer: menu,
+            body: CustomScrollView(
               slivers: [
+                SliverAppBar(
+                  title: Text("Trash"),
+                ),
+                SliverToBoxAdapter(
+                  child: MaterialBanner(
+                    leading: Icon(Icons.auto_delete_outlined),
+                    content: Text("Los elementos que estén en la papelera más de 7 días se eliminan automáticamente"),
+                    actions: [
+                      TextButton(
+                        onPressed: (){},
+                        child: Text("Vaciar palera ahora"),
+                      )
+                    ],
+                  ),
+                ),
                 NoteList(notes: notes),
               ],
             ),
@@ -44,6 +61,41 @@ class _ArchiveState extends State<Trash> {
           ),
         );
       },
+    );
+  }
+}
+
+class TrashDisclaimer extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    ColorScheme colorScheme = Theme.of(context).colorScheme;
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
+      child: Material(
+        color: colorScheme.tertiaryContainer,
+        borderRadius: BorderRadius.circular(12),
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(
+                Icons.auto_delete,
+                color: colorScheme.onTertiaryContainer,
+              ),
+              SizedBox(width: 12),
+              Flexible(
+                child: Text(
+                  "Items in trash are permanently deleted after 7 days.",
+                  style: TextStyle(
+                    color: colorScheme.onTertiaryContainer,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

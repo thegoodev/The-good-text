@@ -3,6 +3,8 @@ import 'package:md_notes/blocs/archive.dart';
 import 'package:md_notes/models/note.dart';
 import 'package:md_notes/widgets/note_list.dart';
 
+import '../widgets/menu.dart';
+
 GlobalKey<ScaffoldState> archiveScaffold = GlobalKey<ScaffoldState>();
 
 class Archive extends StatefulWidget {
@@ -17,15 +19,22 @@ class _ArchiveState extends State<Archive> {
 
   @override
   Widget build(BuildContext context) {
+
+    CustomMenu? menu = MenuDrawer.maybeOf(context);
+
     return StreamBuilder<List<Note>>(
       stream: bloc.notes,
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           List<Note> notes = snapshot.data!;
 
-          return Material(
-            child: CustomScrollView(
+          return Scaffold(
+            drawer: menu,
+            body: CustomScrollView(
               slivers: [
+                SliverAppBar(
+                  title: Text("Archive"),
+                ),
                 NoteList(notes: notes),
               ],
             ),

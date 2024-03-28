@@ -16,66 +16,88 @@ import 'package:firebase_auth/firebase_auth.dart';
 final GlobalKey<NavigatorState> _rootNavKey = GlobalKey<NavigatorState>();
 
 final router = GoRouter(
+  restorationScopeId: "main",
   navigatorKey: _rootNavKey,
   initialLocation: "/",
   routes: [
-    ShellRoute(
-      builder: (context, state, child) {
-        return NestedNavigator(
-          child: child,
-          state: state,
+    StatefulShellRoute.indexedStack(
+      restorationScopeId: "nested",
+      builder: (BuildContext context, GoRouterState state,
+          StatefulNavigationShell navigationShell){
+        return AdaptiveNavigation(
+          navigationShell: navigationShell,
         );
       },
-      routes: [
-        GoRoute(
-          path: "/",
-          builder: (context, state) {
-            return HomePage();
-          },
-          routes: <RouteBase>[
+      branches: [
+        StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: "/",
+                builder: (context, state) {
+                  return HomePage();
+                },
+                routes: <RouteBase>[
+                  GoRoute(
+                    path: "n/:id",
+                    parentNavigatorKey: _rootNavKey,
+                    builder: (context, state) {
+                      return ReadingMode(state: state);
+                    },
+                    routes: <RouteBase>[
+                      GoRoute(
+                        path: "edit",
+                        parentNavigatorKey: _rootNavKey,
+                        builder: (context, state) {
+                          return Editor(state: state);
+                        },
+                      )
+                    ],
+                  ),
+                ],
+              ),
+            ],
+        ),
+        StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: "/archive",
+                builder: (context, state) {
+                  return Archive();
+                },
+              ),
+            ],
+        ),
+        StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: "/trash",
+                builder: (context, state) {
+                  return Trash();
+                },
+              ),
+            ],
+        ),
+        StatefulShellBranch(
+          routes: [
             GoRoute(
-              path: "n/:id",
-              parentNavigatorKey: _rootNavKey,
+              path: "/account",
               builder: (context, state) {
-                return ReadingMode(state: state);
+                return Account();
               },
-              routes: <RouteBase>[
-                GoRoute(
-                  path: "edit",
-                  parentNavigatorKey: _rootNavKey,
-                  builder: (context, state) {
-                    return Editor(state: state);
-                  },
-                )
-              ],
             ),
           ],
         ),
-        GoRoute(
-          path: "/archive",
-          builder: (context, state) {
-            return Archive();
-          },
-        ),
-        GoRoute(
-          path: "/trash",
-          builder: (context, state) {
-            return Trash();
-          },
-        ),
-        GoRoute(
-          path: "/account",
-          builder: (context, state) {
-            return Account();
-          },
-        ),
-        GoRoute(
-          path: "/settings",
-          builder: (context, state) {
-            return Container(color: Colors.green);
-          },
-        ),
-      ],
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              path: "/settings",
+              builder: (context, state) {
+                return Container(color: Colors.green);
+              },
+            ),
+          ],
+        )
+      ]
     ),
     GoRoute(
       path: "/login",

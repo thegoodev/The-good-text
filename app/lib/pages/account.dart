@@ -1,10 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:md_notes/widgets/menu.dart';
 import 'package:md_notes/widgets/profile_pic.dart';
 
 class Account extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+
+    CustomMenu? menu = MenuDrawer.maybeOf(context);
+
     return Scaffold(
+      drawer: menu,
+      appBar: AppBar(
+        title: Text("Account"),
+      ),
       body: SingleChildScrollView(
         child: Center(
           child: Padding(
