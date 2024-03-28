@@ -6,8 +6,6 @@ class UserProvider {
     DocumentSnapshot snapshot =
         await FirebaseFirestore.instance.doc("users/${uid}").get();
 
-    print(snapshot.data());
-
     if (snapshot.exists) {
       return GoodUser(
         uid: uid,
