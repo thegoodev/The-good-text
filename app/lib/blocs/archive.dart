@@ -7,5 +7,5 @@ class ArchiveBloc {
   final _repository = NotesProvider();
 
   Stream<List<Note>> get notes =>
-      _repository.notesWithState(NoteState.archived);
+      _repository.notesWithStateUpdates(NoteState.archived);
 }

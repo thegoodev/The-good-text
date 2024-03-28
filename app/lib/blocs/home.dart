@@ -13,7 +13,7 @@ class NoteListBloc {
 
   Future<void> fetchMainNotes() async {
     if (_subscription == null) {
-      _subscription = _provider.mainNotes.listen(
+      _subscription = _provider.mainNotesUpdates().listen(
         (event) {
           _controller.add(event);
         },

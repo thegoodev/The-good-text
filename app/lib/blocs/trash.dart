@@ -6,5 +6,6 @@ import 'package:md_notes/resources/notes_provider.dart';
 class TrashBloc {
   final _repository = NotesProvider();
 
-  Stream<List<Note>> get notes => _repository.notesWithState(NoteState.deleted);
+  Stream<List<Note>> get notes =>
+      _repository.notesWithStateUpdates(NoteState.deleted);
 }
