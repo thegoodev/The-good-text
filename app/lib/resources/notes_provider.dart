@@ -35,14 +35,22 @@ class NotesProvider {
         toFirestore: toFirestore,
       );
 
-  Future<List<Note>> fetchNotesWithState(NoteState state) async {
-    late Query<Note> query = _notesRef
-        .where("state", isEqualTo: state)
-        .orderBy("last_edit", descending: true);
+  // Create operations
 
-    QuerySnapshot<Note> snapshot = await query.get();
-    return snapshot.docs.map<Note>((qs) => qs.data()).toList();
+  Future<Note> createNote() async {
+    DocumentReference ref = _notesRef.doc();
+
+    Note note = Note(
+      id: ref.id,
+      author: _user!.uid,
+    );
+
+    ref.set(note);
+
+    return note;
   }
+
+  // Read Operations
 
   Query<Note> get _mainNotesQuery => _notesRef
       .where("state", whereIn: [
@@ -57,13 +65,22 @@ class NotesProvider {
     return snapshot.docs.map<Note>((qs) => qs.data()).toList();
   }
 
-  Stream<List<Note>> notesWithState(NoteState state) => _notesRef
-      .where("state", isEqualTo: state.index)
-      .orderBy("last_edit", descending: true)
+  Stream<List<Note>> mainNotesUpdates() => _mainNotesQuery
       .snapshots()
       .map((qs) => qs.docs.map<Note>((doc) => doc.data()).toList());
 
-  Stream<List<Note>> get mainNotes => _mainNotesQuery
+  Future<List<Note>> fetchNotesWithState(NoteState state) async {
+    late Query<Note> query = _notesRef
+        .where("state", isEqualTo: state)
+        .orderBy("last_edit", descending: true);
+
+    QuerySnapshot<Note> snapshot = await query.get();
+    return snapshot.docs.map<Note>((qs) => qs.data()).toList();
+  }
+
+  Stream<List<Note>> notesWithStateUpdates(NoteState state) => _notesRef
+      .where("state", isEqualTo: state.index)
+      .orderBy("last_edit", descending: true)
       .snapshots()
       .map((qs) => qs.docs.map<Note>((doc) => doc.data()).toList());
 
@@ -71,19 +88,31 @@ class NotesProvider {
     return (await _notesRef.doc(id).get()).data();
   }
 
-  Stream<Note?> syncNote(String id) =>
+  Stream<Note?> noteUpdates(String id) =>
       _notesRef.doc(id).snapshots().map<Note?>((snapshot) => snapshot.data());
 
-  Future<Note> createNote() async {
-    DocumentReference ref = _notesRef.doc();
+  // Update operations
 
-    Note note = Note(
-      id: ref.id,
-      author: _user!.uid,
-    );
-
-    ref.set(note);
-
-    return note;
+  Future<void> updateNoteState(String id, NoteState state) async {
+    try {
+      await _notesRef.doc(id).update({"state": state.index});
+    } catch (e) {
+      print(e);
+    }
   }
+
+  Future<void> updateNoteBody(String id, String body) async {
+    if (body.isNotEmpty) {
+      try {
+        await _notesRef.doc(id).update({
+          "body": body,
+          "last_edit": FieldValue.serverTimestamp(),
+        });
+      } catch (e) {
+        print(e);
+      }
+    }
+  }
+
+  // Delete operations
 }
