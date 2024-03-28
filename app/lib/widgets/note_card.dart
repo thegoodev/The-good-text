@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:go_router/go_router.dart';
 import 'package:md_notes/models/note.dart';
+import 'package:md_notes/widgets/label_list.dart';
+import 'package:md_notes/widgets/markdown.dart';
 import 'package:md_notes/widgets/surface_container.dart';
 
 class NoteCard extends StatelessWidget {
@@ -39,9 +41,9 @@ class NoteCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    ThemeData themeData = Theme.of(context);
-    TextTheme textTheme = themeData.textTheme;
-    ColorScheme colorScheme = themeData.colorScheme;
+    ThemeData theme = Theme.of(context);
+    TextTheme textTheme = theme.textTheme;
+    ColorScheme colorScheme = theme.colorScheme;
 
     return Material(
       color: colorScheme.surface,
@@ -69,73 +71,16 @@ class NoteCard extends StatelessWidget {
               SizedBox(height: 4),
               MarkdownBody(
                 data: getContent(),
-                styleSheet: MarkdownStyleSheet(
-                  listIndent: 12.0,
-                  blockSpacing: 4.0,
-                  h1: textTheme.titleMedium,
-                  h2: textTheme.bodyMedium!
-                      .copyWith(fontWeight: FontWeight.bold),
-                  h3: textTheme.bodyMedium!
-                      .copyWith(fontWeight: FontWeight.bold),
-                  h4: textTheme.bodyMedium!
-                      .copyWith(fontWeight: FontWeight.bold),
-                  h5: textTheme.bodyMedium!
-                      .copyWith(fontWeight: FontWeight.bold),
-                  h6: textTheme.bodyMedium!
-                      .copyWith(fontWeight: FontWeight.bold),
-                  horizontalRuleDecoration: BoxDecoration(
-                    border: Border(
-                      top:
-                          BorderSide(width: 1.0, color: themeData.dividerColor),
-                    ),
-                  ),
-                ),
+                styleSheet: reduced(theme),
               ),
-              _LabelList(
+              if(note.labels.isNotEmpty)
+                SizedBox(height: 8),
+              LabelList(
                 labels: note.labels,
               )
-              //NoteLabelList(note: note, maxLength: 4),
             ],
           ),
         ),
-      ),
-    );
-  }
-}
-
-class _LabelList extends StatelessWidget {
-  _LabelList({
-    required this.labels,
-  });
-
-  final List<String> labels;
-
-  @override
-  Widget build(BuildContext context) {
-    if (labels.isEmpty) {
-      return SizedBox();
-    }
-
-    return Padding(
-      padding: const EdgeInsets.only(top: 8.0),
-      child: Wrap(
-        children: labels
-            .map<Widget>(
-              (label) => SurfaceContainer(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 4.0,
-                    horizontal: 8.0,
-                  ),
-                  child: Text(
-                    label,
-                    style: Theme.of(context).textTheme.labelMedium,
-                  ),
-                ),
-                borderRadius: BorderRadius.circular(4),
-              ),
-            )
-            .toList(),
       ),
     );
   }
